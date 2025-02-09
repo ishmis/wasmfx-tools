@@ -1,0 +1,77 @@
+(module
+  (type $ht (;0;) (handler ( )))
+  (type $ft_client (;1;) (func (param (ref $ht) (ref $ht))))
+  (type $ct_client (;2;) (cont $ft_client))
+  (type $ft_inner (;3;) (func (param (ref $ct_client) (ref $ht))))
+  (type $ct_inner (;4;) (cont $ft_inner))
+  (type $ft_client_ask (;5;) (func (param i32 (ref $ht))))
+  (type $ct_client_ask (;6;) (cont $ft_client_ask))
+  (type (;7;) (func (param i32)))
+  (type (;8;) (func (result i32)))
+  (type (;9;) (func (param (ref $ct_inner) (ref $ct_client))))
+  (type (;10;) (func))
+  (import "spectest" "print_i32" (func $print-i32 (;0;) (type 7)))
+  (tag $ask (;0;) (type 8) (result i32))
+  (export "main" (func 4))
+  (elem (;0;) declare func $client $environ-inner $environ-outer)
+  (func $client (;1;) (type $ft_client) (param $hname_inner (ref $ht)) (param $hname_outer (ref $ht))
+    (local $a i32)
+    local.get $hname_inner
+    suspend_to $ht $ask
+    local.set $hname_inner
+    local.set $a
+    local.get $hname_outer
+    suspend_to $ht $ask
+    local.set $hname_outer
+    local.get $a
+    i32.add
+    call $print-i32
+  )
+  (func $environ-outer (;2;) (type 9) (param $k (ref $ct_inner)) (param $k_client (ref $ct_client))
+    (local $k_ask (ref $ct_client_ask))
+    block $on_ask (result (ref $ct_client_ask))
+      local.get $k_client
+      local.get $k
+      resume_with $ct_inner (on $ask $on_ask)
+      return
+    end
+    local.set $k_ask
+    loop $loop
+      block $on_ask (result (ref $ct_client_ask))
+        i32.const 0
+        local.get $k_ask
+        resume_with $ct_client_ask (on $ask $on_ask)
+        return
+      end
+      local.set $k_ask
+      br $loop
+    end
+  )
+  (func $environ-inner (;3;) (type $ft_inner) (param $k (ref $ct_client)) (param $houter (ref $ht))
+    (local $k_ask (ref $ct_client_ask))
+    block $on_ask (result (ref $ct_client_ask))
+      local.get $houter
+      local.get $k
+      resume_with $ct_client (on $ask $on_ask)
+      return
+    end
+    local.set $k_ask
+    loop $loop
+      block $on_ask (result (ref $ct_client_ask))
+        i32.const 42
+        local.get $k_ask
+        resume_with $ct_client_ask (on $ask $on_ask)
+        return
+      end
+      local.set $k_ask
+      br $loop
+    end
+  )
+  (func (;4;) (type 10)
+    ref.func $environ-inner
+    cont.new $ct_inner
+    ref.func $client
+    cont.new $ct_client
+    call $environ-outer
+  )
+)

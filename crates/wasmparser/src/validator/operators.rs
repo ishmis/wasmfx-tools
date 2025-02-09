@@ -1654,13 +1654,12 @@ where
                                     bail!(self.offset, "non-continuation type");
                                 };
                             let new_func_ty = self.func_type_of_cont_type(&new_cont);
-                            let opt_params = new_func_ty.params().split_at_checked(1); 
+                            let opt_params = new_func_ty.params().split_last(); 
                             if opt_params.is_none() {
-                                bail!(self.offset, "invalid arguments to resume_with, expecting a named handler argument"); 
+                                bail!(self.offset, "invalid arguments to resume_with, expecting at least a handler name"); 
                             }
-                            let (handler_param, new_func_tag_params) = opt_params.unwrap(); 
+                            let (handler_ref, new_func_tag_params) = opt_params.unwrap(); 
                             // ensure $handler is present as first arugment
-                            let handler_ref = handler_param.first().unwrap();
                             match handler_ref {
                                 ValType::Ref(r) => {
                                     if let HeapType::Concrete(handler_idx) = r.heap_type() {
@@ -4370,7 +4369,7 @@ where
         let ft = self.check_resume_with_table(table, type_index)?;
         // pop reference to continuation 
         self.pop_concrete_ref(true, type_index)?;
-        let (_, params) = ft.params().split_at(1); 
+        let (_, params) = ft.params().split_last().unwrap(); 
         // Check that ts1 are available on the stack.
         for &ty in params.iter().rev() {
             if ISHMIS_DEBUG {println!("ishmis: about to pop in resume_with {}", ty);}

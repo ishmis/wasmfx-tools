@@ -1,0 +1,55 @@
+(module
+  (type $ht (;0;) (handler ( )))
+  (type $ft (;1;) (func (param (ref $ht))))
+  (type $ct (;2;) (cont $ft))
+  (type (;3;) (func (param i32)))
+  (type (;4;) (func (param i32) (result i32)))
+  (type (;5;) (func (result i32 (ref $ct))))
+  (tag $yield (;0;) (type 3) (param i32))
+  (export "sumUp" (func 1))
+  (elem (;0;) declare func $nats)
+  (func $nats (;0;) (type $ft) (param $h (ref $ht))
+    (local $i (ref $ht)) (local i32)
+    local.get $h
+    local.set $i
+    loop $next
+      local.get 2
+      local.get $i
+      suspend_to $ht $yield
+      local.set $i
+      i32.const 1
+      local.get 2
+      i32.add
+      local.set 2
+      br $next
+    end
+  )
+  (func (;1;) (type 4) (param $n i32) (result i32)
+    (local $i i32) (local $j i32) (local $k (ref $ct))
+    ref.func $nats
+    cont.new $ct
+    local.set $k
+    loop $next
+      block $on_yield (type 5) (result i32 (ref $ct))
+        local.get $k
+        resume_with $ct (on $yield $on_yield)
+        local.get $i
+        return
+      end
+      local.set $k
+      local.get $i
+      i32.add
+      local.set $i
+      i32.const 1
+      local.get $j
+      i32.add
+      local.set $j
+      local.get $j
+      local.get $n
+      i32.le_u
+      br_if $next
+    end
+    local.get $i
+    return
+  )
+)
