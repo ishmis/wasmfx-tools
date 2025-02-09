@@ -1,7 +1,7 @@
-<div align="center">
-  <h1><code>wasm-tools</code></h1>
+# Named Effect Handler Proposal for WebAssembly (WIP)
 
-<strong>A <a href="https://bytecodealliance.org/">Bytecode Alliance</a> project</strong>
+This repository is a clone of [`bytecodealliance/wasm-tools`](https://github.com/bytecodealliance/wasm-tools). It is meant for discussion, prototype specification, and implementation of a proposal to add
+support for named effect handlers.
 
   <p>
     <strong>CLI and Rust libraries for low-level manipulation of WebAssembly modules</strong>
@@ -292,6 +292,30 @@ For maintainers, the release process looks like:
 * Review the PR, approve it, then queue it for merge.
 
 That should be it, but be sure to keep an eye on CI in case anything goes wrong.
+
+## Patch Release Process
+
+Patch releases aren't too frequent so the process is a bit more involved at this
+time. The basic idea is the same though as a normal release:
+
+* Determine that you're going to make a patch release for the release of
+  `wasm-tools` version `1.N.0`.
+* If `N` is the latest version on `main`, or basically if a major release hasn't
+  happened since `N`, then land changes on `main` first. Then go to [this
+  link](https://github.com/bytecodealliance/wasm-tools/actions/workflows/release-process.yml)
+  and run the workflow against the `main` branch with `bump-patch` as an
+  argument. Double-check all changes from the `v1.N.0` tag to ensure that no
+  breaking changes in any crate have landed.
+* If `N` is not the latest version on `main`, then create a new branch in the
+  repository named `release-N` starting from the `v1.N.0` tag. Next land changes
+  as PRs against this branch, and note that CI may not have been run in awhile
+  so it may need some fixes. Then run the same workflow as above against the
+  `release-N` branch with the `bump-patch` argument. Again double-check that no
+  breaking changes have been made.
+
+Basically a `release-N` may need to be manually created if the `main` branch has
+moved beyond `N`. After that though it should work basically the same where a
+workflow is run and a PR is merged and that's all that's necessary.
 
 # Contributing
 

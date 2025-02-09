@@ -16,44 +16,16 @@
       "text": "unknown import"
     },
     {
-      "type": "assert_unlinkable",
-      "line": 27,
-      "filename": "memory_max.2.wasm",
-      "module_type": "binary",
-      "text": "unknown import"
+      "type": "assert_malformed",
+      "line": 32,
+      "filename": "memory_max.2.wat",
+      "module_type": "text",
+      "text": "constant out of range"
     },
     {
-      "type": "assert_unlinkable",
-      "line": 34,
+      "type": "assert_invalid",
+      "line": 37,
       "filename": "memory_max.3.wasm",
-      "module_type": "binary",
-      "text": "unknown import"
-    },
-    {
-      "type": "assert_malformed",
-      "line": 46,
-      "filename": "memory_max.4.wat",
-      "module_type": "text",
-      "text": "constant out of range"
-    },
-    {
-      "type": "assert_malformed",
-      "line": 51,
-      "filename": "memory_max.5.wat",
-      "module_type": "text",
-      "text": "constant out of range"
-    },
-    {
-      "type": "assert_invalid",
-      "line": 56,
-      "filename": "memory_max.6.wasm",
-      "module_type": "binary",
-      "text": "memory size must be at most"
-    },
-    {
-      "type": "assert_invalid",
-      "line": 62,
-      "filename": "memory_max.7.wasm",
       "module_type": "binary",
       "text": "memory size must be at most"
     }

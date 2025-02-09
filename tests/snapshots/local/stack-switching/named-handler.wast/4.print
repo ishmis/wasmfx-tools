@@ -1,0 +1,24 @@
+(module
+  (type $ht (;0;) (handler ( )))
+  (type $f (;1;) (func (param (ref $ht))))
+  (type $g (;2;) (func))
+  (type $k (;3;) (cont $f))
+  (type $k2 (;4;) (cont $g))
+  (tag $e (;0;) (type $g))
+  (export "handled_proper" (func 1))
+  (elem (;0;) declare func $f)
+  (func $f (;0;) (type $f) (param (ref $ht))
+    local.get 0
+    suspend_to $ht $e
+    drop
+  )
+  (func (;1;) (type $g)
+    block $h (result (ref $k))
+      ref.func $f
+      cont.new $k
+      resume_with $k (on $e $h)
+      unreachable
+    end
+    drop
+  )
+)
