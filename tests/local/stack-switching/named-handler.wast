@@ -77,7 +77,7 @@
 (assert_return (invoke "handled_proper"))
 
 (module
-  (type $ht (handler (i32 i64 f32 f64)))
+  (type $ht (handler (result i32 i64 f32 f64)))
   (type $ft (func (param (ref $ht))))
   (type $ct (cont $ft))
 

@@ -1,5 +1,5 @@
 (module
-  (type $ht (;0;) (handler ( i32 i64 f32 f64 )))
+  (type $ht (;0;) (handler (result i32 i64 f32 f64 )))
   (type $ft (;1;) (func (param (ref $ht))))
   (type $ct (;2;) (cont $ft))
   (type (;3;) (func (result (ref $ct))))

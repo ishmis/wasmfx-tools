@@ -989,7 +989,7 @@ impl Printer<'_, '_> {
 
     fn print_handler_type(&mut self, state: &State, ty: &HandlerType) -> Result<u32> {
         let values = NamedLocalPrinter::new("values");
-        self.result.write_str(" ( ")?;
+        self.result.write_str(" (result ")?;
         for param in ty.vals.iter() {
             self.print_valtype(state, *param)?;
             self.result.write_str(" ")?;

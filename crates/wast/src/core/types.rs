@@ -950,9 +950,12 @@ impl<'a> Parse<'a> for HandlerType<'a> {
         let mut ret = HandlerType { vals: Vec::new() };
         while !parser.is_empty() {
             parser.parens(|parser| {
-                while parser.peek::<ValType>()? {
-                    let field = ValType::parse(parser);
-                    ret.vals.push(field?);
+                if parser.peek::<kw::result>()? {
+                    parser.parse::<kw::result>()?;
+                    while parser.peek::<ValType>()? {
+                        let field = ValType::parse(parser);
+                        ret.vals.push(field?);
+                    }
                 }
                 Ok(())
             })?;

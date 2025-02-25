@@ -1,5 +1,5 @@
 (module
-  (type $ht (;0;) (handler ( )))
+  (type $ht (;0;) (handler (result )))
   (type $ft_client (;1;) (func (param (ref $ht) (ref $ht))))
   (type $ct_client (;2;) (cont $ft_client))
   (type $ft_inner (;3;) (func (param (ref $ct_client) (ref $ht))))
