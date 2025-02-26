@@ -500,7 +500,7 @@ impl Encode for AbstractHeapType {
             NoExn => sink.push(0x74),
             Cont => sink.push(0x68),
             NoCont => sink.push(0x75),
-            Handler => sink.push(0x67),
+            Handler => sink.push(0x62),
             NoHandler => sink.push(0x66),
         }
     }

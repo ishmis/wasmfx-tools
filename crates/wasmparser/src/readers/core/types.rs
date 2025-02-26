@@ -1759,11 +1759,11 @@ impl<'a> FromReader<'a> for ValType {
         // | 0x6A    | -22     | array        | gc proposal                  |
         // | 0x69    | -23     | exnref       | gc + exceptions proposal     |
         // | 0x68    | -24     | contref      | stack switching proposal     |
-        // | 0x67    | -25     | handlerref   | named handler proposal       |
         // | 0x66    | -26     | nohandler    | named handler proposal       |
         // | 0x65    | -27     | shared $t    | shared-everything proposal   |
         // | 0x64    | -28     | ref $t       | gc proposal, prefix byte     |
         // | 0x63    | -29     | ref null $t  | gc proposal, prefix byte     |
+        // | 0x62    | -30     | handlerref   | named handler proposal       |
         // | 0x60    | -32     | func $t      | prefix byte                  |
         // | 0x5f    | -33     | struct $t    | gc proposal, prefix byte     |
         // | 0x5e    | -34     | array $t     | gc proposal, prefix byte     |
@@ -1910,7 +1910,7 @@ impl<'a> FromReader<'a> for AbstractHeapType {
                 0x74 => Ok(NoExn),
                 0x68 => Ok(Cont),
                 0x75 => Ok(NoCont),
-                0x67 => Ok(Handler),
+                0x62 => Ok(Handler),
                 0x66 => Ok(NoHandler),
                 _ => {
                     return Err(BinaryReaderError::invalid(
