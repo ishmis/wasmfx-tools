@@ -1,0 +1,103 @@
+{
+  "source_filename": "tests/local/stack-switching/named-handler.wast",
+  "commands": [
+    {
+      "type": "assert_invalid",
+      "line": 2,
+      "filename": "named-handler.0.wasm",
+      "module_type": "binary",
+      "text": "type mismatch"
+    },
+    {
+      "type": "assert_invalid",
+      "line": 15,
+      "filename": "named-handler.1.wasm",
+      "module_type": "binary",
+      "text": "type mismatch"
+    },
+    {
+      "type": "module",
+      "line": 35,
+      "filename": "named-handler.2.wasm",
+      "module_type": "binary"
+    },
+    {
+      "type": "assert_return",
+      "line": 50,
+      "action": {
+        "type": "invoke",
+        "field": "f",
+        "args": []
+      },
+      "expected": [
+        {
+          "type": "i32",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "type": "module",
+      "line": 53,
+      "filename": "named-handler.3.wasm",
+      "module_type": "binary"
+    },
+    {
+      "type": "assert_return",
+      "line": 77,
+      "action": {
+        "type": "invoke",
+        "field": "handled_proper",
+        "args": []
+      },
+      "expected": []
+    },
+    {
+      "type": "module",
+      "line": 79,
+      "filename": "named-handler.4.wasm",
+      "module_type": "binary"
+    },
+    {
+      "type": "assert_return",
+      "line": 94,
+      "action": {
+        "type": "invoke",
+        "field": "f",
+        "args": []
+      },
+      "expected": [
+        {
+          "type": "i32",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "type": "module",
+      "line": 98,
+      "filename": "named-handler.5.wasm",
+      "module_type": "binary"
+    },
+    {
+      "type": "assert_return",
+      "line": 136,
+      "action": {
+        "type": "invoke",
+        "field": "sumUp",
+        "args": [
+          {
+            "type": "i32",
+            "value": "10"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "type": "i32",
+          "value": "55"
+        }
+      ]
+    }
+  ]
+}

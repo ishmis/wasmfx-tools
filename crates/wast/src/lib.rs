@@ -411,7 +411,9 @@ pub mod kw {
     custom_keyword!(catch_all_ref);
     custom_keyword!(code);
     custom_keyword!(cont);
-    custom_keyword!(contref);
+    custom_keyword!(contref);    
+    custom_keyword!(handler);
+    custom_keyword!(handlerref); 
     custom_keyword!(component);
     custom_keyword!(data);
     custom_keyword!(declare);
@@ -462,12 +464,14 @@ pub mod kw {
     custom_keyword!(nan_arithmetic = "nan:arithmetic");
     custom_keyword!(nan_canonical = "nan:canonical");
     custom_keyword!(nocont);
+    custom_keyword!(nohandler);
     custom_keyword!(nofunc);
     custom_keyword!(noextern);
     custom_keyword!(noexn);
     custom_keyword!(none);
     custom_keyword!(null);
     custom_keyword!(nullcontref);
+    custom_keyword!(nullhandlerref);
     custom_keyword!(nullfuncref);
     custom_keyword!(nullexternref);
     custom_keyword!(nullexnref);
@@ -555,7 +559,7 @@ pub mod kw {
     custom_keyword!(import_info = "import-info");
     custom_keyword!(thread);
     custom_keyword!(thread_spawn = "thread.spawn");
-    custom_keyword!(thread_hw_concurrency = "thread.hw_concurrency");
+    custom_keyword!(thread_available_parallelism = "thread.available_parallelism");
     custom_keyword!(task_backpressure = "task.backpressure");
     custom_keyword!(task_return = "task.return");
     custom_keyword!(task_wait = "task.wait");

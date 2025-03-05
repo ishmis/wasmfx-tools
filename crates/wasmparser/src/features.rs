@@ -226,7 +226,7 @@ define_wasm_features! {
         /// so are not gated by this.
         pub gc_types: GC_TYPES(1 << 26) = true;
         /// The WebAssembly [stack-switching proposal](https://github.com/WebAssembly/stack-switching).
-        pub stack_switching: STACK_SWITCHING(1 << 27) = false;
+        pub stack_switching: STACK_SWITCHING(1 << 27) = true;
         /// The WebAssembly [wide-arithmetic proposal](https://github.com/WebAssembly/wide-arithmetic).
         pub wide_arithmetic: WIDE_ARITHMETIC(1 << 28) = false;
         /// Support for component model async lift/lower ABI, as well as streams, futures, and errors.
