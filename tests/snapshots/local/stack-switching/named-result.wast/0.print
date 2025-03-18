@@ -1,0 +1,37 @@
+(module
+  (type $ht (;0;) (handler (result i32 i64 f32 f64 )))
+  (type $ft (;1;) (func (param (ref $ht)) (result i32 i64 f32 f64)))
+  (type $ct (;2;) (cont $ft))
+  (type (;3;) (func))
+  (type (;4;) (func (result i32)))
+  (tag $t (;0;) (type 3))
+  (export "f" (func $f))
+  (elem (;0;) declare func $g)
+  (func $g (;0;) (type $ft) (param (ref $ht)) (result i32 i64 f32 f64)
+    i32.const 1
+    i64.const 2
+    f32.const 0x1.8p+1 (;=3;)
+    f64.const 0x1p+2 (;=4;)
+    return
+  )
+  (func $f (;1;) (type 4) (result i32)
+    (local $i i32) (local $k (ref $ct))
+    ref.func $g
+    cont.new $ct
+    local.set $k
+    loop $next
+      block $on_t (result (ref $ct))
+        local.get $k
+        resume_with $ct (on $t $on_t)
+        drop
+        drop
+        drop
+        local.set $i
+        local.get $i
+        return
+      end
+      unreachable
+    end
+    unreachable
+  )
+)

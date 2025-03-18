@@ -35,7 +35,7 @@ use crate::{
 use crate::{prelude::*, CompositeInnerType, Ordering};
 use core::ops::{Deref, DerefMut};
 
-const ISHMIS_DEBUG: bool = false; 
+const ISHMIS_DEBUG: bool = false;
 
 #[cfg(feature = "simd")]
 mod simd;
@@ -1658,20 +1658,7 @@ where
                             if opt_params.is_none() {
                                 bail!(self.offset, "invalid arguments to resume_with, expecting at least a handler name"); 
                             }
-                            let (handler_ref, new_func_tag_params) = opt_params.unwrap(); 
-                            // ensure $handler is present as first arugment
-                            match handler_ref {
-                                ValType::Ref(r) => {
-                                    if let HeapType::Concrete(handler_idx) = r.heap_type() {
-                                        self.handler_type_at(handler_idx.as_core_type_id()
-                                            .expect("expected an handler as first argument of continuation passed to resume_with").index() as u32)?; 
-                                        if ISHMIS_DEBUG {println!("ishmis: WE GOT A HANDLER FOR SURE!");}
-                                    } else {
-                                        bail!(self.offset, "expected continuation with resume_with to refer to a handler ref");
-                                    }
-                                },
-                                _ => ()
-                            }
+                            let (_, new_func_tag_params) = opt_params.unwrap(); 
                             // Check that (ts2' -> ts2) <: $ft
                             if new_func_tag_params.len() != tag_ty.results().len() || !self.is_subtype_many(new_func_tag_params, tag_ty.results())
                                 || old_func_ty.results().len() != new_func_ty.results().len() || !self.is_subtype_many(old_func_ty.results(), new_func_ty.results()) {
@@ -4238,7 +4225,9 @@ where
         self.pop_concrete_ref(true, type_index)?;
         // Check that ts1 are available on the stack.
         for &ty in ft.params().iter().rev() {
-            if ISHMIS_DEBUG { println!("ishmis: resume is going to be popping {}", ty); }
+            if ISHMIS_DEBUG {
+                println!("ishmis: resume is going to be popping {}", ty);
+            }
             self.pop_operand(Some(ty))?;
         }
 
@@ -4246,7 +4235,9 @@ where
         for &ty in ft.results() {
             self.push_operand(ty)?;
         }
-        if ISHMIS_DEBUG { println!("ishmis:finishing up with resume");}
+        if ISHMIS_DEBUG {
+            println!("ishmis:finishing up with resume");
+        }
         Ok(())
     }
     fn visit_resume_throw(
@@ -4344,21 +4335,25 @@ where
     }
     fn visit_suspend_to(&mut self, handler_index: u32, tag_index: u32) -> Self::Output {
         // ensure handler is present at index - fix this TODO
-        let hdl= self.handler_type_at(handler_index)?;
+        let hdl = self.handler_type_at(handler_index)?;
         if ISHMIS_DEBUG {
             for v in hdl.vals.iter() {
                 println!("handler has value {}", v);
-            }   
+            }
         }
         let handler_ref = self.pop_operand(Some(ValType::Ref(RefType::HANDLERREF)))?;
         let ft = &self.tag_at(tag_index)?;
         let param_itr = ft.params().iter().rev();
         for &ty in param_itr {
-            if ISHMIS_DEBUG {println!("ishmis: suspend popping for tag: {}", ty.to_string());}
+            if ISHMIS_DEBUG {
+                println!("ishmis: suspend popping for tag: {}", ty.to_string());
+            }
             self.pop_operand(Some(ty))?;
         }
         for &ty in ft.results() {
-            if ISHMIS_DEBUG {println!("push push: {}", ty.to_string());}
+            if ISHMIS_DEBUG {
+                println!("push push: {}", ty.to_string());
+            }
             self.push_operand(ty)?;
         }
         self.push_operand(handler_ref)?;
@@ -4367,17 +4362,48 @@ where
     fn visit_resume_with(&mut self, type_index: u32, table: ResumeTable) -> Self::Output {
         // [ts1] -> [ts2]
         let ft = self.check_resume_with_table(table, type_index)?;
-        // pop reference to continuation 
+        // pop reference to continuation
         self.pop_concrete_ref(true, type_index)?;
-        let (_, params) = ft.params().split_last().unwrap(); 
+        let (handler_ref, params) = ft.params().split_last().unwrap();
+        // Below we ensure two things:
+        // 1. The final arugment to the continuation is a handler ref
+        // 2. The return values of the continuation match up with the handler result values
+        match handler_ref {
+            ValType::Ref(r) => {
+                if let HeapType::Concrete(handler_idx) = r.heap_type() {
+                    let hdl = self.handler_type_at(handler_idx.as_core_type_id()
+                                .expect("expected handler name as the final argument to continuation passed to resume_with").index() as u32)?;
+                    // ensure handler result types match with the continuation results
+                    if hdl.vals.len() != ft.results().len()
+                        || !hdl
+                            .vals
+                            .iter().zip(ft.results().iter())
+                            .all(|(a, b)| a == b)
+                    {
+                        bail!(self.offset, 
+                                    "type mismatch: result type(s) of handler do not match the result type(s) of continuation passed to resume_with");
+                    }
+                } else {
+                    bail!(self.offset, "resume_with: continuation missing final handler name reference, wrong reference type");
+                }
+            }
+            _ => bail!(
+                self.offset,
+                "resume_with: continuation missing final handler name reference"
+            ),
+        }
         // Check that ts1 are available on the stack.
         for &ty in params.iter().rev() {
-            if ISHMIS_DEBUG {println!("ishmis: about to pop in resume_with {}", ty);}
+            if ISHMIS_DEBUG {
+                println!("ishmis: about to pop in resume_with {}", ty);
+            }
             self.pop_operand(Some(ty))?;
         }
         // Make ts2 available on the stack.
         for &ty in ft.results() {
-            if ISHMIS_DEBUG {println!("ishmis: about to push in resume_with {}", ty);}
+            if ISHMIS_DEBUG {
+                println!("ishmis: about to push in resume_with {}", ty);
+            }
             self.push_operand(ty)?;
         }
         Ok(())

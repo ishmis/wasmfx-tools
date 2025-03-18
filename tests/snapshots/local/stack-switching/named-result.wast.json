@@ -1,0 +1,47 @@
+{
+  "source_filename": "tests/local/stack-switching/named-result.wast",
+  "commands": [
+    {
+      "type": "module",
+      "line": 4,
+      "filename": "named-result.0.wasm",
+      "module_type": "binary"
+    },
+    {
+      "type": "assert_return",
+      "line": 34,
+      "action": {
+        "type": "invoke",
+        "field": "f",
+        "args": []
+      },
+      "expected": [
+        {
+          "type": "i32",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "type": "assert_invalid",
+      "line": 39,
+      "filename": "named-result.1.wasm",
+      "module_type": "binary",
+      "text": "type mismatch: result type(s) of handler do not match the result type(s) of continuation passed to resume_with"
+    },
+    {
+      "type": "assert_invalid",
+      "line": 73,
+      "filename": "named-result.2.wasm",
+      "module_type": "binary",
+      "text": "type mismatch: result type(s) of handler do not match the result type(s) of continuation passed to resume_with"
+    },
+    {
+      "type": "assert_invalid",
+      "line": 107,
+      "filename": "named-result.3.wasm",
+      "module_type": "binary",
+      "text": "type mismatch: result type(s) of handler do not match the result type(s) of continuation passed to resume_with"
+    }
+  ]
+}

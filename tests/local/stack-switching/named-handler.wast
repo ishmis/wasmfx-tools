@@ -93,7 +93,6 @@
 )
 (assert_return (invoke "f") (i32.const 0))
 
-
 ;; Summation example
 (module
   (type $ht (handler))
